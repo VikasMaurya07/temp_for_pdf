@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<!-- saved from url=(0052)file:///tmp/crossnote2025730-33674-1wb0yy.qh7xd.html -->
+<!-- saved from url=(0052)file:///tmp/crossnote2025730-33674-18fp43f.gx37.html -->
 <html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
       <title>readme</title>
       
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       
-      <link rel="stylesheet" href="./needed_files/katex.min.css">
+      <link rel="stylesheet" href="./leeded_files/katex.min.css">
       
       
       
@@ -26,63 +26,83 @@
     
       <div class="crossnote markdown-preview  ">
       
-<h1 id="3x3-sudoku-solver-using-minisat">3x3 Sudoku Solver using MiniSAT </h1>
-<p>This project demonstrates how to solve a <strong>3x3 Sudoku puzzle</strong> by encoding it into a <strong>SAT problem</strong> and using <a href="http://minisat.se/">MiniSAT</a> as the solver. The approach is to develop sufficient number of cluases of 3x3x3 = 27 variables. The chosen amount of variables can be understood from the fact that these are total 9 cells mode from 3 rows and 3 column and each cell contains exactly one number among {1,2,3}. The clause should follow these five constraints as per the rules of the sudoku puzzle. <strong>Note that (i represents row index, j represent column index, k represents the number in the cell);</strong></p>
+<h1 id="2-sat-solver-c">2-SAT Solver (C++) </h1>
+<p>This program solves the <strong>2-SAT (2-Satisfiability)</strong> problem using <strong>Strongly Connected Components (SCC)</strong> with <strong>Kosaraju's algorithm</strong>. It determines whether a given boolean formula (in conjunctive normal form with two literals per clause) is satisfiable, and if so, produces a valid assignment. See code comments in the main file <code>tst.cpp</code> for more details about the implementation.</p>
+<hr>
+<h2 id="-input-format">📥 Input Format </h2>
 <ul>
-<li>Condition 1: cell [i,j] contains only one number</li>
-<li>Condition 2: row i contains number k exactly once</li>
-<li>Condition 3: col j contains number k exactly once</li>
-<li>Condition 4: k appears exactly once in each 1x3 block; this is not needed here in 3x3 Sudoku, as it gets satisfied by condition 1</li>
-<li>Condition 5: Variables representing already given numbers in the puzzle should not be zero</li>
+<li>
+<p>The first line contains two integers:<br>
+<code>n</code> = number of boolean variables (variables are numbered <code>1..n</code>)<br>
+<code>m</code> = number of clauses<br>
+<br></p>
+</li>
+<li>
+<p>The next <code>m</code> lines each contain two integers: which represents the clause <code>(a ∨ b)</code>.<br>
+A positive number <code>x</code> represents variable <code>x</code>.<br>
+A negative number <code>-x</code> represents the negation of variable <code>x</code>.</p>
+</li>
 </ul>
 <hr>
-<h2 id="-prequisites">📌 Prequisites </h2>
-<p>MiniSAT is an open-source, high-performance SAT solver. Its installation process varies depending on your operating system. The most common methods are compiling from source or using a package manager. For Ubuntu-Linux use;</p>
-<pre data-role="codeBlock" data-info="" class="language-text"><code>sudo apt-get install minisat
-</code></pre><hr>
-<h2 id="-puzzle-input-format">📌 Puzzle Input Format </h2>
-<p>The Sudoku puzzles is given in a <code>vector&lt;string&gt;</code> format inside the <code>puzzles.txt</code> file:</p>
-<pre data-role="codeBlock" data-info="cpp" class="language-cpp cpp"><code>vector<span class="token operator">&lt;</span>string<span class="token operator">&gt;</span> puzzle <span class="token operator">=</span> <span class="token punctuation">{</span>
-    <span class="token string">"23*"</span><span class="token punctuation">,</span>
-    <span class="token string">"*12"</span><span class="token punctuation">,</span>
-    <span class="token string">"***"</span>
-<span class="token punctuation">}</span><span class="token punctuation">;</span>
-</code></pre><p>To run your own puzzles, clear the privious puzzles in the <code>puzzles.txt</code> file and enter the new ones in the specified format and save the file.</p>
+<h2 id="-output-format">📤 Output Format </h2>
+<ul>
+<li>
+<p>If the formula is <strong>unsatisfiable</strong>, the program prints:<br>
+<code>UNSATISFIABLE</code><br>
+<br></p>
+</li>
+<li>
+<p>If it is <strong>satisfiable</strong>, the program prints:<br>
+<code>SATISFIABLE  x1 x2 ... xn</code><br>
+Where:<br>
+Each entry is either a positive integer <code>i</code> (meaning variable <code>i</code> is assigned <code>true</code>)<br>
+Or a negative integer <code>-i</code> (meaning variable <code>i</code> is assigned <code>false</code>).</p>
+</li>
+</ul>
 <hr>
-<h2 id="-reading-the-outputs">📌 Reading the outputs </h2>
-<p>Compile the <code>main.cpp</code> file using;</p>
-<pre data-role="codeBlock" data-info="" class="language-text"><code>g++ -o main main.cpp 
-</code></pre><p>Once you update the <code>puzzles.txt</code> file, run;<br>
-<code>./main</code></p>
-<p>Two temporary files will be genrated while solving a puzzle. <code>tmp.cnf</code> provides the input for the SAT solver (here MiniSAT) in CNF format pertaining to a single puzzle. <code>tmp.sat</code> is then used by <code>main.cpp</code> to read and print the solution provided by MiniSAT.</p>
-<p>The terminal will output the results of the puzzles in the given format;<br>
-<code>Puzzle X: No Solution</code> if the puzzle can't be solved<br>
-<code>Puzzle X: Solution</code> followed by next three lines: the solution.</p>
-<p>Below is provided is a sample output for the default puzzles inside the <code>puzzles.txt</code> file;</p>
-<pre data-role="codeBlock" data-info="" class="language-text"><code>Puzzle 1 solution:
-321
-132
-213
-
-Puzzle 2 solution:
-123
-312
-231
-
-Puzzle 3: No solution
-
-Puzzle 4 solution:
-231
-312
-123
-
-Puzzle 5: No solution
-</code></pre><h2 id="-images">📌 Images </h2>
-<h4 id="input--puzzlestxt">Input <code>puzzles.txt</code> </h4>
-<p><img src="./needed_files/image.png" alt="alt text"></p>
-<h4 id="output">Output </h4>
-<p><img src="./needed_files/image-1.png" alt="alt text"></p>
-<h3 id="️️️">😃️😃️😃️ </h3>
+<h2 id="️-example">▶️ Example </h2>
+<h3 id="input">Input: </h3>
+<pre data-role="codeBlock" data-info="" class="language-text"><code>3 3
+1 2
+-1 3
+-2 -3
+</code></pre><h3 id="explanation">Explanation </h3>
+<p>The clauses are:</p>
+<ul>
+<li><code>(x1 ∨ x2)</code></li>
+<li><code>(¬x1 ∨ x3)</code></li>
+<li><code>(¬x2 ∨ ¬x3)</code></li>
+</ul>
+<p>This formula is satisfiable.</p>
+<h3 id="output">Output </h3>
+<pre data-role="codeBlock" data-info="" class="language-text"><code>SATISFIABLE
+-1 2 -3
+</code></pre><p>This means:</p>
+<ul>
+<li><code>x1 = false</code></li>
+<li><code>x2 = true</code></li>
+<li><code>x3 = false</code></li>
+</ul>
+<hr>
+<h2 id="️-compilation-and-usage">⚙️ Compilation and Usage </h2>
+<ol>
+<li>Compile:<pre data-role="codeBlock" data-info="bash" class="language-bash bash"><code>g++ <span class="token parameter variable">-std</span><span class="token operator">=</span>c++17 <span class="token parameter variable">-O2</span> <span class="token parameter variable">-o</span> twosat twosat.cpp
+</code></pre></li>
+<li>Run with example input: <code>./twosat</code> in the same directory.<pre data-role="codeBlock" data-info="" class="language-text"><code> 3 3
+ 1 2
+ -1 3
+ -2 -3
+</code></pre></li>
+<li>Verify the outputs.</li>
+</ol>
+<hr>
+<h2 id="️-images">📷️ Images </h2>
+<h3 id="test-1">Test 1 </h3>
+<p><img src="./leeded_files/Screenshot from 2025-08-30 05-58-07.png" alt="alt text"></p>
+<h3 id="test-2">Test 2 </h3>
+<p><img src="./leeded_files/image.png" alt="alt text"></p>
+<h3 id="test-3">Test 3 </h3>
+<p><img src="./leeded_files/image-1.png" alt="alt text"></p>
 
       </div>
       
